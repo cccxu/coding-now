@@ -1,13 +1,10 @@
-package cn.cccxu.accountservice.controller;
+package cn.cccxu.codingnow.controller;
 
-import cn.cccxu.accountservice.model.User;
-import cn.cccxu.accountservice.service.LoginService;
-import cn.cccxu.accountservice.service.RegisterService;
+import cn.cccxu.codingnow.model.User;
+import cn.cccxu.codingnow.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 徐浩
@@ -25,9 +22,15 @@ public class RegisterController {
     }
 
     //注册，通过json传入User对象
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/account/register")
     @ResponseBody
     public boolean register(@RequestBody User user){
         return registerService.register(user);
+    }
+
+    @GetMapping(path="/account/checkUserIdUsable")
+    @ResponseBody
+    public boolean checkUserIdUsable(@RequestParam String userId) {
+        return registerService.checkUserIdUseable(userId);
     }
 }

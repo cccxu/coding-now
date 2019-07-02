@@ -1,9 +1,10 @@
-package cn.cccxu.accountservice.dao;
+package cn.cccxu.codingnow.dao;
 
-import cn.cccxu.accountservice.entity.LoginInfo;
+import cn.cccxu.codingnow.entity.LoginInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 @Mapper
@@ -20,4 +21,13 @@ public interface LoginInfoDao {
     @Select({"SELECT * FROM", TABLE_NAME,
             "WHERE user_id = #{userId}"})
     LoginInfo checkUserLogin(String userId);
+
+    @Select({"SELECT user_id FROM ", TABLE_NAME,
+            "WHERE user_id = #{0}"})
+    String checkUserIdUsable(String userId);
+
+    @Update({"UPDATE ", TABLE_NAME,
+            "SET (password_hash, salt) = (#{passwordHash}, #{salt}) " +
+                    "WHERE user_id = #{userId}"})
+    boolean changePassword(LoginInfo loginInfo);
 }

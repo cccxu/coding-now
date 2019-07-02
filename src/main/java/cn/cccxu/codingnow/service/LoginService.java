@@ -1,6 +1,6 @@
-package cn.cccxu.accountservice.service;
+package cn.cccxu.codingnow.service;
 
-import cn.cccxu.accountservice.dao.LoginInfoDao;
+import cn.cccxu.codingnow.dao.LoginInfoDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

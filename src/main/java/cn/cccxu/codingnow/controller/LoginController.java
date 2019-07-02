@@ -1,6 +1,6 @@
-package cn.cccxu.accountservice.controller;
+package cn.cccxu.codingnow.controller;
 
-import cn.cccxu.accountservice.service.LoginService;
+import cn.cccxu.codingnow.service.LoginService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,13 +23,13 @@ public class LoginController {
 
 
 
-    @GetMapping(path = "/getSalt")
+    @GetMapping(path = "/account/getSalt")
     @ResponseBody
     public String getSalt(@RequestParam String userId){
         return loginService.getSalt(userId);
     }
 
-    @PostMapping(path = "/signin")
+    @PostMapping(path = "/account/signin")
     @ResponseBody
     public boolean signIn(@RequestBody JSONObject jsonObject){
         return loginService.checkUserLogin(jsonObject.get("userId").toString(),

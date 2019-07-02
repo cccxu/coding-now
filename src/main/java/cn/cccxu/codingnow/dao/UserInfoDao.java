@@ -1,7 +1,6 @@
-package cn.cccxu.accountservice.dao;
+package cn.cccxu.codingnow.dao;
 
-import cn.cccxu.accountservice.entity.UserInfo;
-import cn.cccxu.accountservice.model.User;
+import cn.cccxu.codingnow.entity.UserInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package cn.cccxu.accountservice.entity;
+package cn.cccxu.codingnow.entity;
 
 /**
  * @author 徐浩

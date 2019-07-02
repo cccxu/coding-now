@@ -1,4 +1,4 @@
-package cn.cccxu.accountservice;
+package cn.cccxu.codingnow;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

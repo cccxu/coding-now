@@ -1,8 +1,8 @@
-package cn.cccxu.accountservice.model;
+package cn.cccxu.codingnow.model;
 
-import cn.cccxu.accountservice.entity.LoginInfo;
-import cn.cccxu.accountservice.entity.LoginSafe;
-import cn.cccxu.accountservice.entity.UserInfo;
+import cn.cccxu.codingnow.entity.LoginInfo;
+import cn.cccxu.codingnow.entity.LoginSafe;
+import cn.cccxu.codingnow.entity.UserInfo;
 
 /**
  * @author 徐浩
@@ -13,6 +13,12 @@ public class User {
     private LoginInfo loginInfo;
     private LoginSafe loginSafe;
     private UserInfo userInfo;
+
+    public User(LoginInfo loginInfo, LoginSafe loginSafe, UserInfo userInfo) {
+        this.loginInfo = loginInfo;
+        this.loginSafe = loginSafe;
+        this.userInfo = userInfo;
+    }
 
     public LoginInfo getLoginInfo() {
         return loginInfo;

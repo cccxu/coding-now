@@ -1,8 +1,9 @@
-package cn.cccxu.accountservice.dao;
+package cn.cccxu.codingnow.dao;
 
-import cn.cccxu.accountservice.entity.LoginSafe;
+import cn.cccxu.codingnow.entity.LoginSafe;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,4 +21,8 @@ public interface LoginSafeDao {
     @Insert({"INSERT INTO ", TABLE_NAME, "(", LOGIN_SAFE, ") " +
             "VALUES(#{userId}, #{questionId}, #{answer})"})
     boolean insertLoginSafeInfo(LoginSafe loginSafe);
+
+    @Select({"SELECT * FROM ", TABLE_NAME,
+                "WHERE user_id = #{0}" })
+    LoginSafe selectLoginSafe(String userId);
 }

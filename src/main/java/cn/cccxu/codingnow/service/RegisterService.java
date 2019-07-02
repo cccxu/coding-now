@@ -1,9 +1,9 @@
-package cn.cccxu.accountservice.service;
+package cn.cccxu.codingnow.service;
 
-import cn.cccxu.accountservice.dao.LoginInfoDao;
-import cn.cccxu.accountservice.dao.LoginSafeDao;
-import cn.cccxu.accountservice.dao.UserInfoDao;
-import cn.cccxu.accountservice.model.User;
+import cn.cccxu.codingnow.dao.LoginInfoDao;
+import cn.cccxu.codingnow.dao.LoginSafeDao;
+import cn.cccxu.codingnow.dao.UserInfoDao;
+import cn.cccxu.codingnow.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,12 @@ public class RegisterService {
     }
 
     public boolean register(User user) {
-        return loginInfoDao.insertLoginInfo(user.getLoginInfo()) &
-                loginSafeDao.insertLoginSafeInfo(user.getLoginSafe()) &
-                userInfoDao.insertUserInfo(user.getUserInfo());
+        return userInfoDao.insertUserInfo(user.getUserInfo()) &
+                loginInfoDao.insertLoginInfo(user.getLoginInfo()) &
+                loginSafeDao.insertLoginSafeInfo(user.getLoginSafe());
+    }
+
+    public boolean checkUserIdUseable(String userId) {
+        return loginInfoDao.checkUserIdUsable(userId) == null;
     }
 }
