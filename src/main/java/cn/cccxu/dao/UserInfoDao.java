@@ -29,10 +29,13 @@ public interface UserInfoDao {
 
     @Update({"UPDATE ", TABLE_NAME,
              "SET " +
-                 "(user_nick_name, head_pic, email, gender, phone_number) = " +
-                 "(#{userNickName}, #{headPic}, #{email}, #{gender}, #{phoneNumber})" +
-             "WHERE user_id = " +
-                 "#{userId}"})
+                 "user_nick_name = #{userNickName}, " +
+                 "head_pic = #{headPic}, " +
+                 "email = #{email}, " +
+                 "gender = #{gender}, " +
+                 "phone_number = #{phoneNumber}" +
+             "WHERE " +
+                     "user_id = #{userId}"})
     boolean updateUserInfo(UserInfo userInfo);
 
     @Update({"UPDATE ", TABLE_NAME,

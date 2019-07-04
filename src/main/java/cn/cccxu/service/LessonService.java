@@ -28,6 +28,7 @@ public class LessonService {
         return (lessonDao.checkLessonIdUseable(lessonId) == null);
     }
 
+
     public boolean addNewLesson(Lesson lesson) {
         //课程存储的路径
         String rootPath = "/coding-now/resources/lessons/" + lesson.getLessonId();

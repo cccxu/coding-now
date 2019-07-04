@@ -1,5 +1,6 @@
 package cn.cccxu;
 
+import cn.cccxu.dao.LoginSafeDao;
 import cn.cccxu.service.LoginSafeService;
 import cn.cccxu.entity.LoginSafe;
 import org.junit.Assert;
@@ -16,12 +17,10 @@ public class LoginSafeTest extends BaseTest {
     @Autowired
     private LoginSafeService loginSafeService;
 
+    @Autowired
+    private LoginSafeDao loginSafeDao;
+
     @Test
     public void changePasswordTest() {
-        LoginSafe loginSafe = new LoginSafe();
-        loginSafe.setUserId("100000");
-        loginSafe.setQuestionId(1);
-        loginSafe.setAnswer("我是钢铁侠");
-        Assert.assertTrue(loginSafeService.checkLoginSafe(loginSafe));
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-public class TestController {
+public class AAATestController {
 
     @GetMapping(path="/hello")
     @ResponseBody

@@ -27,7 +27,9 @@ public interface LoginInfoDao {
     String checkUserIdUsable(String userId);
 
     @Update({"UPDATE ", TABLE_NAME,
-            "SET (password_hash, salt) = (#{passwordHash}, #{salt}) " +
-                    "WHERE user_id = #{userId}"})
+            "SET " +
+                "password_hash =  #{passwordHash}, salt = #{salt} " +
+            "WHERE " +
+                "user_id = #{userId}"})
     boolean changePassword(LoginInfo loginInfo);
 }

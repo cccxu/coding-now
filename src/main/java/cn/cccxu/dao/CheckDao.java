@@ -20,4 +20,5 @@ public interface CheckDao {
 
     @Select("SELECT member_points FROM tb_user_info WHERE user_id = #{userId}")
     int getMemberPoints(String userId);
+
 }

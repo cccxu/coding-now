@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.cccxu</groupId>
-    <artifactId>account-service</artifactId>
-    <version>1.0-LOCALTEST</version>
-    <name>account-service</name>
-    <description>Demo project for Spring Boot</description>
+    <artifactId>codingnow</artifactId>
+    <version>1.0</version>
+    <name>codingnow</name>
+    <description>Coding Now</description>
 
     <properties>
         <java.version>11</java.version>

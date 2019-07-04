@@ -21,4 +21,8 @@ public interface TeacherDao {
     @Select("SELECT * FROM tb_teacher " +
             "WHERE teacher_id = #{teacherId}")
     TeacherInfo selectTeacherInfo(String teacherId);
+
+    @Select("SELECT teacher_id FROM tb_teacher " +
+            "WHERE teacher_id = #{teacherId}")
+    String selectTeacherId(String teacherId);
 }

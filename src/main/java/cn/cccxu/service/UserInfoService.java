@@ -52,7 +52,9 @@ public class UserInfoService {
             //静态资源方位url
             String url = "/pictures/head-image/" + userId + file.getOriginalFilename().substring(lastIndexOfFileName);
             //写入数据库
-            userInfoDao.updateUserHeadImage(url, userId);
+            if(!userInfoDao.updateUserHeadImage(url, userId)){
+                return "ERROR";
+            };
             //返回给客户端
             return url;
         } catch (Exception e){

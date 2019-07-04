@@ -7,6 +7,8 @@ import cn.cccxu.entity.LoginSafe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author 徐浩
  * created at 2019/07/02
@@ -26,6 +28,13 @@ public class LoginSafeService {
 
     public boolean checkLoginSafe(LoginSafe loginSafe) {
         LoginSafe iLoginSafe = loginSafeDao.selectLoginSafe(loginSafe.getUserId());
+        try {
+            byte[] utf8Bytes = new String(iLoginSafe.getAnswer().getBytes(StandardCharsets.ISO_8859_1), "GBK").getBytes(StandardCharsets.UTF_8);
+            iLoginSafe.setAnswer(new String(utf8Bytes, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return loginSafe.getUserId().equals(iLoginSafe.getUserId()) &
                 loginSafe.getAnswer().equals(iLoginSafe.getAnswer()) &
                 loginSafe.getQuestionId() == iLoginSafe.getQuestionId();

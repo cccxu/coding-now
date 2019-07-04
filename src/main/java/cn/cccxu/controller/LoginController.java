@@ -31,8 +31,15 @@ public class LoginController {
 
     @PostMapping(path = "/account/login")
     @ResponseBody
-    public boolean signIn(@RequestBody JSONObject jsonObject){
+    public boolean login(@RequestBody JSONObject jsonObject){
         return loginService.checkUserLogin(jsonObject.get("userId").toString(),
+                jsonObject.get("passwordHash").toString());
+    }
+
+    @PostMapping(path = "/account/teacherLogin")
+    @ResponseBody
+    public boolean teacherLogin(@RequestBody JSONObject jsonObject){
+        return loginService.checkTeacherLogin(jsonObject.get("userId").toString(),
                 jsonObject.get("passwordHash").toString());
     }
 
