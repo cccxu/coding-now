@@ -19,10 +19,10 @@ public interface LoginSafeDao {
     String LOGIN_SAFE = " user_id, question_id, answer ";
 
     @Insert({"INSERT INTO ", TABLE_NAME, "(", LOGIN_SAFE, ") " +
-            "VALUES(#{userId}, #{questionId}, #{answer})"})
+            " VALUES(#{userId}, #{questionId}, #{answer})"})
     boolean insertLoginSafeInfo(LoginSafe loginSafe);
 
     @Select({"SELECT * FROM ", TABLE_NAME,
-                "WHERE user_id = #{userId}" })
+                " WHERE user_id = #{userId}" })
     LoginSafe selectLoginSafe(String userId);
 }

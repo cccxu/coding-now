@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class PersonalCollectionController {
 
     @GetMapping(path = "/collection/getCollection")
     @ResponseBody
-    public List<PersonalCollection> getCollection(@RequestParam("userId") String userId){
-       return  personalCollectionService.getUserCollection(userId);
+    public List<PersonalCollection> getCollection(HttpServletRequest request){
+       return  personalCollectionService.getUserCollection(String.valueOf(request.getSession().getAttribute("userId")));
     }
 }

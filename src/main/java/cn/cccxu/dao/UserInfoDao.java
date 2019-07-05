@@ -20,27 +20,26 @@ public interface UserInfoDao {
     String NEW_USER_INFO = " user_id, user_nick_name, head_pic, email, gender, phone_number ";
 
     @Insert({"INSERT INTO ", TABLE_NAME, "(", NEW_USER_INFO, ")" +
-            " values (#{userId}, #{userNickName}, #{headPic}, #{email}, #{gender}, #{phoneNumber})"})
+            " VALUES (#{userId}, #{userNickName}, #{headPic}, #{email}, #{gender}, #{phoneNumber})"})
     boolean insertUserInfo(UserInfo userInfo);
 
     @Select({"SELECT * FROM ", TABLE_NAME,
-            "WHERE user_id = #{userId}"})
+            " WHERE user_id = #{userId}"})
     UserInfo selectUserInfo(String userId);
 
     @Update({"UPDATE ", TABLE_NAME,
              "SET " +
                  "user_nick_name = #{userNickName}, " +
-                 "head_pic = #{headPic}, " +
                  "email = #{email}, " +
                  "gender = #{gender}, " +
-                 "phone_number = #{phoneNumber}" +
+                 "phone_number = #{phoneNumber} " +
              "WHERE " +
                      "user_id = #{userId}"})
     boolean updateUserInfo(UserInfo userInfo);
 
     @Update({"UPDATE ", TABLE_NAME,
             "SET " +
-                "head_pic = #{headImage}" +
+                " head_pic = #{headImage} " +
             "WHERE " +
                 "user_id = #{userId}"})
     boolean updateUserHeadImage(String headImage, String userId);

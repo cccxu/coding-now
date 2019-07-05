@@ -43,13 +43,15 @@ public class UserInfoService {
         try {
             byte [] bytes = file.getBytes();
             String storeLocal = "/coding-now/resource/pictures/head-image/";
-            //不同的扩展名要处理
+            //保证扩展名不变
             int lastIndexOfFileName = file.getOriginalFilename().lastIndexOf(".");
             Path paths = Paths.get(storeLocal
                     + userId
                     + file.getOriginalFilename().substring(lastIndexOfFileName));
-            Files.write(paths, bytes, StandardOpenOption.CREATE_NEW);
-            //静态资源方位url
+
+            Files.write(paths, bytes, StandardOpenOption.CREATE);
+
+            //静态资源访问url
             String url = "/pictures/head-image/" + userId + file.getOriginalFilename().substring(lastIndexOfFileName);
             //写入数据库
             if(!userInfoDao.updateUserHeadImage(url, userId)){
@@ -62,5 +64,11 @@ public class UserInfoService {
             return "ERROR";
         }
 
+    }
+
+    //修改用户信息
+    //传入完整userInfo
+    public boolean setUserInfo(UserInfo userInfo) {
+        return userInfoDao.updateUserInfo(userInfo);
     }
 }

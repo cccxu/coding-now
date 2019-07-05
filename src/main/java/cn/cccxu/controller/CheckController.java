@@ -1,10 +1,12 @@
 package cn.cccxu.controller;
 
 import cn.cccxu.service.CheckService;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author 徐浩
@@ -20,9 +22,17 @@ public class CheckController {
         this.checkService = mCheckService;
     }
 
-    @GetMapping(path="/user/check")
+    @PostMapping(path="/user/check")
     @ResponseBody
-    public boolean check(@RequestParam int gainedPoints, @RequestParam String userId) {
-        return checkService.check(gainedPoints, userId);
+    public boolean check(@RequestBody JSONObject jsonObject,
+                         HttpServletRequest request) {
+
+        HttpSession httpSession = request.getSession();
+        if(httpSession.getAttribute("userId") != null){
+            return checkService.check(Integer.parseInt(jsonObject.get("gainedPoints").toString()),
+                    (String)httpSession.getAttribute("userId"));
+        } else {
+            return false;
+        }
     }
 }

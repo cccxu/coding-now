@@ -19,8 +19,8 @@ import java.util.List;
 public interface LessonDao {
 
     @Insert("INSERT INTO tb_lesson" +
-                "(lesson_id, lesson_title, teacher_id, upload_time, introduction, root_path, sector_account)" +
-            "VALUES" +
+                "(lesson_id, lesson_title, teacher_id, upload_time, introduction, root_path, sector_account) " +
+            " VALUES" +
                 "(#{lessonId}, #{lessonTitle}, #{teacherId}, #{uploadTime}, #{introduction}, #{rootPath}, #{sectorAccount})")
     boolean insertLesson(Lesson lesson);
 
@@ -33,9 +33,16 @@ public interface LessonDao {
     String checkLessonIdUseable(String lessonId);
 
     @Select("SELECT " +
-                "* " +
+                " * " +
             "WHERE " +
                 "teacher_id = #{teacherId}")
-    List<Lesson> getTeacherLessons(String teacherId);
+    List<Lesson> selectTeacherLessons(String teacherId);
 
+    @Select("SELECT " +
+                "root_path " +
+            "FROM " +
+                "tb_lesson " +
+            "WHERE " +
+                "lesson_id = #{lessonId}")
+    String selectLessonStoreLocal(String lessonId);
 }

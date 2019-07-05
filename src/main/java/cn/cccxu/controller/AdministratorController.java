@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author 徐浩
  * created at 2019/07/01
@@ -23,7 +25,12 @@ public class AdministratorController {
 
     @PostMapping(path="/teacher/addTeacher")
     @ResponseBody
-    public boolean addTeacher(@RequestBody TeacherInfo teacherInfo) {
-        return teacherInfoService.promoteToTeacher(teacherInfo);
+    public boolean addTeacher(@RequestBody TeacherInfo teacherInfo,
+                              HttpServletRequest request) {
+        if(request.getSession().getAttribute("adminId") != null) {
+            return teacherInfoService.promoteToTeacher(teacherInfo);
+        } else {
+            return false;
+        }
     }
 }
