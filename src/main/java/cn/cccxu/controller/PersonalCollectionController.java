@@ -4,9 +4,8 @@ import cn.cccxu.entity.PersonalCollection;
 import cn.cccxu.service.PersonalCollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +26,16 @@ public class PersonalCollectionController {
         this.personalCollectionService = personalCollectionService;
     }
 
+    //todo : session修改
     @PostMapping(path = "/collection/newCollect")
     @ResponseBody
-    public boolean collect(PersonalCollection personalCollection) {
+    public boolean collect(@RequestBody PersonalCollection personalCollection) {
         return personalCollectionService.newPersonalCollect(personalCollection);
     }
 
-    @GetMapping(path = "/collection/getCollection")
+    @PostMapping(path = "/collection/getCollection")
     @ResponseBody
     public List<PersonalCollection> getCollection(HttpServletRequest request){
-       return  personalCollectionService.getUserCollection(String.valueOf(request.getSession().getAttribute("userId")));
+       return  personalCollectionService.getUserCollection(request.getSession().getAttribute("userId").toString());
     }
 }

@@ -1,7 +1,9 @@
 package cn.cccxu.service;
 
-import cn.cccxu.entity.Lesson;
-import cn.cccxu.dao.LessonDao;
+import cn.cccxu.dao.LessonCollectDao;
+import cn.cccxu.entity.LessonInfo;
+import cn.cccxu.dao.LessonInfoDao;
+import cn.cccxu.model.Lesson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,37 +27,42 @@ import java.util.Map;
 @Service
 public class LessonService {
 
-    private LessonDao lessonDao;
-    private String baseAddr = "/coding-now/resources/lessons/";
+    private LessonInfoDao lessonInfoDao;
+    private LessonCollectDao lessonCollectDao;
+
+    private String baseAddr = "/coding-now/resource/lessons/";
     private String auditAddr = "/coding-now/audit-region/";
 
     @Autowired
-    LessonService(LessonDao mLessonDao) {
-        this.lessonDao = mLessonDao;
+    LessonService(LessonInfoDao mLessonInfoDao, LessonCollectDao lessonCollectDao) {
+        this.lessonInfoDao = mLessonInfoDao;
+        this.lessonCollectDao = lessonCollectDao;
     }
 
     //检查课程ID是否可用
     public boolean checkLessonIdUseable(String lessonId) {
-        return (lessonDao.checkLessonIdUseable(lessonId) == null);
+        return (lessonInfoDao.checkLessonIdUseable(lessonId) == null);
     }
 
     //新建课程
     //传入参数：Lesson对象
-    public boolean addNewLesson(Lesson lesson) {
+    public boolean addNewLesson(LessonInfo lessonInfo) {
         //课程存储的路径
-        String rootPath = baseAddr + lesson.getLessonId();
-        String auditPath = auditAddr + lesson.getLessonId();
+        String rootPath = baseAddr + lessonInfo.getLessonId();
+        String auditPath = auditAddr + lessonInfo.getLessonId();
         //创建课程路径，lesson文件夹名称为lessonId
         //创建课程审核路径
         File file = new File(rootPath);
-        file.mkdir();
         File auditFile = new File(auditPath);
-        auditFile.mkdir();
+
         //设置lesson的rootPath, 注意，这里要转为url
-        String url = "/lessons/" + lesson.getLessonId() + "/";
-        lesson.setRootPath(url);
+        String url = "/lessons/" + lessonInfo.getLessonId() + "/";
+        lessonInfo.setRootPath(url);
         //写入数据库
-        return lessonDao.insertLesson(lesson);
+        return lessonInfoDao.insertLesson(lessonInfo) &
+                lessonCollectDao.insertLessonCollct(lessonInfo.getLessonId()) &
+                auditFile.mkdir() &
+                file.mkdir();
     }
 
     //上传课程视频
@@ -70,6 +77,9 @@ public class LessonService {
                 byte[] bytes = files.get(fileName).getBytes();
                 //上传后放到待审核文件夹
                 String storeLocal = auditAddr + lessonId;
+                if(files.get(fileName).getOriginalFilename() == null) {
+                    return false;
+                }
                 //保证扩展名不变
                 int lastIndexOfFileName = files.get(fileName).getOriginalFilename().lastIndexOf(".");
                 Path paths = Paths.get(storeLocal +
@@ -108,6 +118,7 @@ public class LessonService {
         List<String> fileListName = new ArrayList<>();
 
         //获取课程根目录
+        //Path path = Paths.get(baseAddr + lessonId);
         Path path = Paths.get(baseAddr + lessonId);
         File[] fileList = path.toFile().listFiles();
 
@@ -118,7 +129,30 @@ public class LessonService {
         for(File file : fileList){
             fileListName.add(file.getName());
         }
-
         return fileListName;
+    }
+
+    //获取课程对应教师id
+    //传入参数：课程id
+    public String getLessonTeacher(String lessonId) {
+        return lessonInfoDao.selectLessonTeacher(lessonId);
+    }
+
+    //获取课程的全部信息
+    public Lesson getLessonInfo(String lessonId){
+        return new Lesson(lessonInfoDao.selectLessonInfo(lessonId),
+                lessonCollectDao.selectLessonCollectInfo(lessonId));
+    }
+
+    //给课程点赞
+    public boolean likeLesson(String lessonId) {
+        return lessonCollectDao.updateLike(lessonId,
+                lessonCollectDao.getLike(lessonId) + 1);
+    }
+
+    //给课程
+    public boolean dislikeLesson(String lessonId) {
+        return lessonCollectDao.updateDislike(lessonId,
+                lessonCollectDao.getDislike(lessonId) + 1);
     }
 }

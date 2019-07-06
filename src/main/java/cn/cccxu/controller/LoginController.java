@@ -45,9 +45,14 @@ public class LoginController {
         if(loginService.checkUserLogin(jsonObject.getString("userId"),
                 jsonObject.getString("passwordHash"))){
 
+
             HttpSession httpSession = request.getSession();
-            httpSession.setAttribute("userId", jsonObject.getString("userId"));
-            httpSession.setAttribute("userType", "user");
+
+
+            if(httpSession.getAttribute("userId") == null) {
+                httpSession.setAttribute("userId", jsonObject.getString("userId"));
+                httpSession.setAttribute("userType", "user");
+            }
 
             return true;
         } else {
@@ -63,9 +68,10 @@ public class LoginController {
                 jsonObject.getString("passwordHash"))){
 
             HttpSession httpSession = request.getSession();
-            httpSession.setAttribute("userId", jsonObject.getString("userId"));
-            httpSession.setAttribute("userType", "teacher");
-
+            if(httpSession.getAttribute("userId") == null) {
+                httpSession.setAttribute("userId", jsonObject.getString("userId"));
+                httpSession.setAttribute("userType", "teacher");
+            }
             return true;
         } else {
             return false;
@@ -86,13 +92,29 @@ public class LoginController {
                 jsonObject.getString("passwordHash"))) {
 
             HttpSession httpSession = request.getSession();
-            httpSession.setAttribute("adminId", jsonObject.getString("adminId"));
-            httpSession.setAttribute("userType", "admin");
-
+            if(httpSession.getAttribute("userId") == null) {
+                httpSession.setAttribute("adminId", jsonObject.getString("adminId"));
+                httpSession.setAttribute("userType", "admin");
+            }
             return true;
         } else {
             return false;
         }
     }
 
+    @PostMapping(path = "/account/refresh")
+    @ResponseBody
+    public boolean getNewSession(@RequestParam String userId,
+            HttpServletRequest request) {
+
+        HttpSession httpSession = request.getSession();
+
+        if (httpSession.getAttribute("userId") == null) {
+            httpSession.setAttribute("userId", userId);
+            httpSession.setAttribute("userType", "user");
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

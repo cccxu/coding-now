@@ -7,7 +7,7 @@ import org.junit.Test;
  * created at 2019/07/02
  */
 
-public class LessonTest extends BaseTest {
+public class LessonInfoTest extends BaseTest {
 
     @Test
     public void newLesson(){

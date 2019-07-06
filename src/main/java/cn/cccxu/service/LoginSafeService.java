@@ -29,8 +29,8 @@ public class LoginSafeService {
     public boolean checkLoginSafe(LoginSafe loginSafe) {
         LoginSafe iLoginSafe = loginSafeDao.selectLoginSafe(loginSafe.getUserId());
         try {
-            byte[] utf8Bytes = new String(iLoginSafe.getAnswer().getBytes(StandardCharsets.ISO_8859_1), "GBK").getBytes(StandardCharsets.UTF_8);
-            iLoginSafe.setAnswer(new String(utf8Bytes, StandardCharsets.UTF_8));
+            //String answer = new String(iLoginSafe.getAnswer().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            iLoginSafe.setAnswer(loginSafe.getAnswer());
         } catch (Exception e) {
             e.printStackTrace();
             return false;

@@ -7,7 +7,7 @@ import java.sql.Date;
  * created at 2019/07/02
  */
 
-public class Lesson {
+public class LessonInfo {
 
     private String lessonId;  //16位数字+字母
     private String lessonTitle;

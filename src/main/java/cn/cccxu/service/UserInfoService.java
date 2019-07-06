@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,6 +44,11 @@ public class UserInfoService {
         try {
             byte [] bytes = file.getBytes();
             String storeLocal = "/coding-now/resource/pictures/head-image/";
+
+            if(file.getOriginalFilename() == null || !file.getOriginalFilename().contains(".")){
+                return "Illegal File Name";
+            }
+
             //保证扩展名不变
             int lastIndexOfFileName = file.getOriginalFilename().lastIndexOf(".");
             Path paths = Paths.get(storeLocal
@@ -56,10 +62,10 @@ public class UserInfoService {
             //写入数据库
             if(!userInfoDao.updateUserHeadImage(url, userId)){
                 return "ERROR";
-            };
+            }
             //返回给客户端
             return url;
-        } catch (Exception e){
+        } catch (IOException e){
             e.printStackTrace();
             return "ERROR";
         }
