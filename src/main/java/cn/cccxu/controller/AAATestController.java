@@ -15,6 +15,6 @@ public class AAATestController {
     @GetMapping(path="/hello")
     @ResponseBody
     public String hello() {
-        return "Hello";
+        return "Hello,1";
     }
 }

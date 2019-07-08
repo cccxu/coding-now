@@ -1,6 +1,6 @@
 package cn.cccxu.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * @author 徐浩
@@ -12,10 +12,19 @@ public class LessonInfo {
     private String lessonId;  //16位数字+字母
     private String lessonTitle;
     private String teacherId;
-    private Date uploadTime;  //由服务器确定，只保存日期，不保存时间，按照开始上传的日期确定
+    private Timestamp uploadTime;  //由服务器确定
     private String introduction;
     private String rootPath;  //本课程视频的ROOT路径
     private int sectorAccount;  //课程总的课时数
+    private String imageName;
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
 
     public String getLessonId() {
         return lessonId;
@@ -41,11 +50,11 @@ public class LessonInfo {
         this.teacherId = teacherId;
     }
 
-    public Date getUploadTime() {
+    public Timestamp getUploadTime() {
         return uploadTime;
     }
 
-    public void setUploadTime(Date uploadTime) {
+    public void setUploadTime(Timestamp uploadTime) {
         this.uploadTime = uploadTime;
     }
 

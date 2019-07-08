@@ -1,6 +1,7 @@
 package cn.cccxu.service;
 
 import cn.cccxu.dao.LessonCollectDao;
+import cn.cccxu.entity.LessonCollect;
 import cn.cccxu.entity.LessonInfo;
 import cn.cccxu.dao.LessonInfoDao;
 import cn.cccxu.model.Lesson;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +35,8 @@ public class LessonService {
     private String baseAddr = "/coding-now/resource/lessons/";
     private String auditAddr = "/coding-now/audit-region/";
 
+
+
     @Autowired
     LessonService(LessonInfoDao mLessonInfoDao, LessonCollectDao lessonCollectDao) {
         this.lessonInfoDao = mLessonInfoDao;
@@ -46,23 +50,48 @@ public class LessonService {
 
     //新建课程
     //传入参数：Lesson对象
-    public boolean addNewLesson(LessonInfo lessonInfo) {
+    public boolean addNewLesson(MultipartFile imgFile, LessonInfo lessonInfo) {
         //课程存储的路径
         String rootPath = baseAddr + lessonInfo.getLessonId();
         String auditPath = auditAddr + lessonInfo.getLessonId();
-        //创建课程路径，lesson文件夹名称为lessonId
-        //创建课程审核路径
         File file = new File(rootPath);
         File auditFile = new File(auditPath);
+        boolean mkAuditFile = auditFile.mkdir() ;
+        boolean mkFile = file.mkdir();
 
         //设置lesson的rootPath, 注意，这里要转为url
         String url = "/lessons/" + lessonInfo.getLessonId() + "/";
         lessonInfo.setRootPath(url);
+        //存储课程图片
+        if(imgFile.isEmpty()){
+            return false;
+        }
+
+        try {
+            byte[] bytes = imgFile.getBytes();
+            String storeLocal = baseAddr + lessonInfo.getLessonId() + "/";
+
+            if (imgFile.getOriginalFilename() == null || !imgFile.getOriginalFilename().contains(".")) {
+                return false;
+            }
+
+            //保证扩展名不变
+            int lastIndexOfFileName = imgFile.getOriginalFilename().lastIndexOf(".");
+            String fileName =  lessonInfo.getLessonId() + imgFile.getOriginalFilename().substring(lastIndexOfFileName);
+            Path paths = Paths.get(storeLocal+fileName);
+            Files.write(paths, bytes, StandardOpenOption.CREATE);
+
+            //加入lessonInfo
+            lessonInfo.setImageName(fileName);
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
         //写入数据库
         return lessonInfoDao.insertLesson(lessonInfo) &
                 lessonCollectDao.insertLessonCollct(lessonInfo.getLessonId()) &
-                auditFile.mkdir() &
-                file.mkdir();
+                mkAuditFile &
+                mkFile;
     }
 
     //上传课程视频
@@ -98,6 +127,7 @@ public class LessonService {
 
     //审核课程
     //传入参数：课程id, 审核课程的名称（带扩展名）, 审核是否通过
+    //TODO: 将审核未通过的移动到其它文件夹以显示未通过
     public boolean auditVideo(String lessonId, String videoName, boolean pass) {
         //获取文件
         File oldFile = new File(auditAddr + lessonId + "/" + videoName);
@@ -140,6 +170,9 @@ public class LessonService {
 
     //获取课程的全部信息
     public Lesson getLessonInfo(String lessonId){
+        LessonInfo lessonInfo = lessonInfoDao.selectLessonInfo(lessonId);
+        LessonCollect lessonCollect = lessonCollectDao.selectLessonCollectInfo(lessonId);
+        System.out.println(lessonInfo + "\n" + lessonCollect);
         return new Lesson(lessonInfoDao.selectLessonInfo(lessonId),
                 lessonCollectDao.selectLessonCollectInfo(lessonId));
     }

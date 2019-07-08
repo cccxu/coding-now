@@ -6,7 +6,6 @@ import cn.cccxu.service.LessonService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,7 @@ import java.util.Map;
  * @version 1.0 at 2019/7/4
  */
 
-@Controller
+@RestController
 public class LessonController {
 
     private LessonService lessonService;
@@ -31,20 +30,30 @@ public class LessonController {
     }
 
     /**
-     * @param lessonInfo 课程的教师id不再使用
+     * @param file
      * @return 操作结果
      * 修改：
      *  1. 改用session存储的教师id
      */
-    @PostMapping(path = "/lesson/addLesson/")
-    @ResponseBody
-    public boolean addLesson(@RequestBody LessonInfo lessonInfo,
+    @PostMapping(path = "/lesson/addLesson")
+    public boolean addLesson(@RequestParam MultipartFile file,
+                             @RequestParam String lessonId,
+                             @RequestParam String lessonTitle,
+                             @RequestParam String introduction,
+                             @RequestParam int sectorAccount,
                              HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession();
-        if(httpSession.getAttribute("userType").equals("teacher")){
+        if(httpSession.getAttribute("userType")!=null && httpSession.getAttribute("userType").equals("teacher")){
+            LessonInfo lessonInfo = new LessonInfo();
+
             lessonInfo.setTeacherId((String) httpSession.getAttribute("userId"));
-            return lessonService.addNewLesson(lessonInfo);
+            lessonInfo.setLessonId(lessonId);
+            lessonInfo.setIntroduction(introduction);
+            lessonInfo.setLessonTitle(lessonTitle);
+            lessonInfo.setSectorAccount(sectorAccount);
+
+            return lessonService.addNewLesson(file, lessonInfo);
         } else {
             return false;
         }
@@ -53,13 +62,11 @@ public class LessonController {
 
     //获取课程信息，返回Lesson对象
     @GetMapping(path = "/lesson/getLessonInfo")
-    @ResponseBody
     public Lesson getLessonInfo(@RequestParam String lessonId) {
         return lessonService.getLessonInfo(lessonId);
     }
 
     @PostMapping(path = "/lesson/like")
-    @ResponseBody
     public boolean likeLesson(@RequestBody JSONObject jsonObject,
                               HttpServletRequest request) {
         if(request.getSession().getAttribute("userType").equals("user")) {
@@ -70,7 +77,6 @@ public class LessonController {
     }
 
     @PostMapping(path = "/lesson/dislike")
-    @ResponseBody
     public boolean dislikeLesson(@RequestBody JSONObject jsonObject,
                                  HttpServletRequest request) {
         if(request.getSession().getAttribute("userType").equals("user")) {
@@ -81,7 +87,6 @@ public class LessonController {
     }
 
     @PostMapping(path = "/lesson/uploadVideo/{lessonId}")
-    @ResponseBody
     public boolean uploadVideo(@RequestParam Map<String, MultipartFile> files,
                                @PathVariable("lessonId") String lessonId,
                                HttpServletRequest request) {
@@ -96,7 +101,6 @@ public class LessonController {
     }
 
     @GetMapping(path = "/lessons/{lessonId}")
-    @ResponseBody
     public List<String> getVideoList(@PathVariable("lessonId") String lessonId) {
         return lessonService.getVideoList(lessonId);
     }

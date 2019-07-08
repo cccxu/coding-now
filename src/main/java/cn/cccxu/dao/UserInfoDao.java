@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 徐浩
@@ -26,6 +27,18 @@ public interface UserInfoDao {
     @Select({"SELECT * FROM ", TABLE_NAME,
             " WHERE user_id = #{userId}"})
     UserInfo selectUserInfo(String userId);
+
+    //根据用户id获取昵称
+    @Select({"SELECT user_nick_name " +
+            "FROM ", TABLE_NAME,
+            " WHERE user_id = #{userId}"})
+    String selectUserNickName(String userId);
+
+    //根据用户id获取头
+    @Select({"SELECT head_pic " +
+            "FROM ", TABLE_NAME,
+            " WHERE user_id = #{userId}"})
+    String selectUserHeadImg(String userId);
 
     @Update({"UPDATE ", TABLE_NAME,
              "SET " +

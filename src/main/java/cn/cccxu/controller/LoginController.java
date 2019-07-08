@@ -3,7 +3,6 @@ package cn.cccxu.controller;
 import cn.cccxu.service.LoginService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpSession;
  *  2. 用户类型，普通用户：user; 教师：teacher; 管理员：admin
  */
 
-@Controller
+@RestController
 public class LoginController {
 
     private LoginService loginService;
@@ -32,13 +31,11 @@ public class LoginController {
 
 
     @GetMapping(path = "/account/getSalt")
-    @ResponseBody
     public String getSalt(@RequestParam String userId){
         return loginService.getSalt(userId);
     }
 
     @PostMapping(path = "/account/login")
-    @ResponseBody
     public boolean login(@RequestBody JSONObject jsonObject,
                          HttpServletRequest request){
         //验证登录信息
@@ -61,7 +58,6 @@ public class LoginController {
     }
 
     @PostMapping(path = "/account/teacherLogin")
-    @ResponseBody
     public boolean teacherLogin(@RequestBody JSONObject jsonObject,
                                 HttpServletRequest request){
         if(loginService.checkTeacherLogin(jsonObject.getString("userId"),
@@ -79,13 +75,11 @@ public class LoginController {
     }
 
     @GetMapping(path = "/admin/getSalt")
-    @ResponseBody
     public String adminGetSalt(@RequestParam String adminId) {
         return loginService.getAdminSalt(adminId);
     }
 
     @PostMapping(path = "/admin/login")
-    @ResponseBody
     public boolean adminLogin(@RequestBody JSONObject jsonObject,
                               HttpServletRequest request) {
         if(loginService.checkAdminLogin(jsonObject.getString("adminId"),
@@ -103,7 +97,6 @@ public class LoginController {
     }
 
     @PostMapping(path = "/account/refresh")
-    @ResponseBody
     public boolean getNewSession(@RequestParam String userId,
             HttpServletRequest request) {
 

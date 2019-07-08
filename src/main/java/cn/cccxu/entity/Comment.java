@@ -1,6 +1,6 @@
 package cn.cccxu.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * @author 徐浩
@@ -14,7 +14,7 @@ public class Comment {
     private String toUserId;
     private String inLessonId;
     private String content;
-    private Date commentDate;
+    private Timestamp commentDate;
     private int commentLike;
     private long fatherId;
 
@@ -58,11 +58,11 @@ public class Comment {
         this.content = content;
     }
 
-    public Date getCommentDate() {
+    public Timestamp getCommentDate() {
         return commentDate;
     }
 
-    public void setCommentDate(Date commentDate) {
+    public void setCommentDate(Timestamp commentDate) {
         this.commentDate = commentDate;
     }
 

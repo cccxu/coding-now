@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 徐浩
@@ -76,5 +79,25 @@ public class UserInfoService {
     //传入完整userInfo
     public boolean setUserInfo(UserInfo userInfo) {
         return userInfoDao.updateUserInfo(userInfo);
+    }
+
+    //获取用户昵称
+    public Map<String, String> getUserNickName(List<String> userId) {
+        Map<String, String> nm = new HashMap<>();
+
+        for(String user : userId){
+            nm.put(user, userInfoDao.selectUserNickName(user));
+        }
+        return nm;
+    }
+
+    //获取用户头像
+    public Map<String, String> getUserHeadImg(List<String> userId) {
+        Map<String, String> nm = new HashMap<>();
+
+        for(String user : userId){
+            nm.put(user, userInfoDao.selectUserHeadImg(user));
+        }
+        return nm;
     }
 }

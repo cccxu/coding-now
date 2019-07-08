@@ -3,10 +3,9 @@ package cn.cccxu.controller;
 import cn.cccxu.entity.PersonalCollection;
 import cn.cccxu.service.PersonalCollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  * @version 1.0 at 2019/7/4
  */
 
-@Controller
+@RestController
 public class PersonalCollectionController {
 
     private PersonalCollectionService personalCollectionService;
@@ -26,15 +25,19 @@ public class PersonalCollectionController {
         this.personalCollectionService = personalCollectionService;
     }
 
-    //todo : session修改
     @PostMapping(path = "/collection/newCollect")
-    @ResponseBody
-    public boolean collect(@RequestBody PersonalCollection personalCollection) {
-        return personalCollectionService.newPersonalCollect(personalCollection);
+    public boolean collect(@RequestBody PersonalCollection personalCollection,
+                           HttpServletRequest request) {
+        String userId = request.getSession().getAttribute("userId").toString();
+        if(userId == null){
+            return false;
+        } else {
+            personalCollection.setUserId(userId);
+            return personalCollectionService.newPersonalCollect(personalCollection);
+        }
     }
 
     @PostMapping(path = "/collection/getCollection")
-    @ResponseBody
     public List<PersonalCollection> getCollection(HttpServletRequest request){
        return  personalCollectionService.getUserCollection(request.getSession().getAttribute("userId").toString());
     }

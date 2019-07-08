@@ -2,7 +2,6 @@ package cn.cccxu.controller;
 
 import cn.cccxu.service.CheckService;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpSession;
  * created at 2019/07/01
  */
 
-@Controller
+@RestController
 public class CheckController {
 
     private CheckService checkService;
@@ -23,7 +22,6 @@ public class CheckController {
     }
 
     @PostMapping(path="/user/check")
-    @ResponseBody
     public boolean check(@RequestBody JSONObject jsonObject,
                          HttpServletRequest request) {
 

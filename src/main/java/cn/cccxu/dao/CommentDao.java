@@ -45,4 +45,6 @@ public interface CommentDao {
             "SET comment_like = comment_like + 1 " +
             "WHERE comment_id = #{commentId}")
     boolean updateLike(long commentId);
+
+    //todo: 根据用户id查看发言
 }

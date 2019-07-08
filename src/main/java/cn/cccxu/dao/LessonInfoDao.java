@@ -18,9 +18,9 @@ import java.util.List;
 public interface LessonInfoDao {
 
     @Insert("INSERT INTO tb_lesson_info" +
-                "(lesson_id, lesson_title, teacher_id, upload_time, introduction, root_path, sector_account) " +
+                "(lesson_id, lesson_title, teacher_id, introduction, root_path, sector_account, image_name) " +
             " VALUES" +
-                "(#{lessonId}, #{lessonTitle}, #{teacherId}, #{uploadTime}, #{introduction}, #{rootPath}, #{sectorAccount})")
+                "(#{lessonId}, #{lessonTitle}, #{teacherId}, #{introduction}, #{rootPath}, #{sectorAccount}, #{imageName})")
     boolean insertLesson(LessonInfo lessonInfo);
 
     @Select("SELECT " +
@@ -55,4 +55,6 @@ public interface LessonInfoDao {
             "FROM tb_lesson_info " +
             "WHERE lesson_id = #{lessonId}")
     LessonInfo selectLessonInfo(String lessonId);
+
+    //
 }

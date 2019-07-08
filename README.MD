@@ -51,7 +51,7 @@
 
 参数：通过地址传入userId, 格式：../getSalt?userId=
 
-## 2. 登录
+## 2. 用户登录
 
 地址：  https://cccxu.cn/account/signin
 
@@ -62,21 +62,77 @@
 ```json
 {
 	"userId": "用户id",
-	"passwordHash": "用户密码加盐MD5"
+	"passwordHash": "用户密码加盐sh1"
 }
 ```
+
+## 3. 教师登录
+
+地址：`/account/teacherLogin`
+
+方法：post
+
+参数：
+    1. json
+
+`json`格式：
+```json
+{
+    "userId" : "",
+    "passwordHash": "用户密码加盐hash（sh1）"
+}
+```
+
+## 4. 管理员获取salt
+
+地址：`/admin/getSalt`
+
+方法：get
+
+## 5. 管理员登录
+
+地址：`/admin/login`
+
+方法：post
+
+参数：
+    1. json
+
+`json`格式：
+```json
+{
+    "adminId" : "",
+    "passwordHash": "用户密码加盐hash（sh1）"
+}
+```
+
+## 6. 刷新session
+
+地址：`/account/refresh`
+
+方法：post
+
+参数：
+    1. String : userId
+    2. sessionid
 
 # 3. 签到
 
 地址：https://cccxu.cn/user/check
 
-方法： get
+方法：post
 
-参数： 通过地址传入参数，
+参数：
+    1. json
+    2. sessionid
 
-​			第一个参数： `gainedPoints`: 本次签到加的分, 
-
-​			第二个参数：`userId`: 用户id
+`json`格式：
+```json
+{
+    "gainedPoints" : 1,
+    "userId" : "弃用，使用session中的"
+}
+```
 
 # 4. 添加教师
 
@@ -137,4 +193,14 @@ json格式：
         }
 }
 ```
+
+## 4. 上传课程
+
+地址：`/lesson/addLesson`
+
+方法：post
+
+参数：
+    1. MultipartFile : file
+    2. 
 

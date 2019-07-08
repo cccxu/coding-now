@@ -4,10 +4,9 @@ import cn.cccxu.service.LoginSafeService;
 import cn.cccxu.entity.LoginInfo;
 import cn.cccxu.entity.LoginSafe;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpSession;
  * created at 2019/07/02
  */
 
-@Controller
+@RestController
 public class LoginSafeController {
 
     private LoginSafeService loginSafeService;
@@ -35,7 +34,6 @@ public class LoginSafeController {
      *  2. allowChange : true 表示允许修改
      */
     @PostMapping(path="/account/checkLoginSafe")
-    @ResponseBody
     public boolean checkLoginSafe(@RequestBody LoginSafe loginSafe,
                                   HttpServletRequest request) {
 
@@ -59,7 +57,6 @@ public class LoginSafeController {
      *  2. 检查session中的allowChange字段，当且仅当为true时才可以修改
      */
     @PostMapping(path="/account/changePassword")
-    @ResponseBody
     public boolean changePassword(@RequestBody LoginInfo loginInfo,
                                   HttpServletRequest request) {
 

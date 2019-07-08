@@ -17,6 +17,8 @@ public class StaticResourcesConfigruation implements WebMvcConfigurer {
         registry.addResourceHandler("/pictures/**").addResourceLocations("file:/coding-now/resource/pictures/");
         registry.addResourceHandler("/lessons/**").addResourceLocations("file:/coding-now/resource/lessons/");
         registry.addResourceHandler("/temp-upload/**").addResourceLocations("file:/coding-now/resource/temp-upload/");
+        registry.addResourceHandler("/web/teacher/**").addResourceLocations("classpath:/teachersystem/");
+
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 }
