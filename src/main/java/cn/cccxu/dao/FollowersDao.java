@@ -4,7 +4,10 @@ import cn.cccxu.entity.Followers;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author 徐浩
@@ -27,5 +30,9 @@ public interface FollowersDao {
             "WHERE followed_id = #{followedId} AND follower_id = #{followerId}")
     boolean deleteFollow(Followers followers);
 
-    //todo: 获取关注列表
+    //获取关注列表
+    @Select("SELECT followed_id " +
+            "FROM tb_followers " +
+            "WHERE follower_id = #{followerId}")
+    List<String> selectFollowed(String followerId);
 }

@@ -97,8 +97,8 @@ public class LoginController {
     }
 
     @PostMapping(path = "/account/refresh")
-    public boolean getNewSession(@RequestParam String userId,
-            HttpServletRequest request) {
+        public boolean getNewSession(@RequestParam String userId,
+                HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession();
 

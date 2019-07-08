@@ -33,7 +33,8 @@ public class LessonService {
     private LessonCollectDao lessonCollectDao;
 
     private String baseAddr = "/coding-now/resource/lessons/";
-    private String auditAddr = "/coding-now/audit-region/";
+    private String auditAddr = "/coding-now/resource/audit-region/";
+    private String rejectAddr = "/coding-now/resource/reject/";
 
 
 
@@ -106,14 +107,15 @@ public class LessonService {
                 byte[] bytes = files.get(fileName).getBytes();
                 //上传后放到待审核文件夹
                 String storeLocal = auditAddr + lessonId;
-                if(files.get(fileName).getOriginalFilename() == null) {
+                String originalName = files.get(fileName).getOriginalFilename();
+                if(originalName == null) {
                     return false;
                 }
                 //保证扩展名不变
-                int lastIndexOfFileName = files.get(fileName).getOriginalFilename().lastIndexOf(".");
+                int lastIndexOfFileName = originalName.lastIndexOf(".");
                 Path paths = Paths.get(storeLocal +
                         fileName +
-                        files.get(fileName).getOriginalFilename().substring(lastIndexOfFileName));
+                        originalName.substring(lastIndexOfFileName));
 
                 Files.write(paths, bytes, StandardOpenOption.CREATE);
 
@@ -127,15 +129,15 @@ public class LessonService {
 
     //审核课程
     //传入参数：课程id, 审核课程的名称（带扩展名）, 审核是否通过
-    //TODO: 将审核未通过的移动到其它文件夹以显示未通过
     public boolean auditVideo(String lessonId, String videoName, boolean pass) {
         //获取文件
         File oldFile = new File(auditAddr + lessonId + "/" + videoName);
         File newFile = new File(baseAddr + lessonId + "/" + videoName);
+        File rejectFile = new File(rejectAddr + lessonId + "/" + videoName);
         if(pass) {
             return oldFile.renameTo(newFile);
         } else {
-            return oldFile.delete();
+            return oldFile.renameTo(rejectFile);
         }
 
 
@@ -188,4 +190,6 @@ public class LessonService {
         return lessonCollectDao.updateDislike(lessonId,
                 lessonCollectDao.getDislike(lessonId) + 1);
     }
+
+    //todo: 获取课程审核信息列表等
 }
