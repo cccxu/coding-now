@@ -87,7 +87,7 @@ public class LoginController {
 
             HttpSession httpSession = request.getSession();
             if(httpSession.getAttribute("userId") == null) {
-                httpSession.setAttribute("adminId", jsonObject.getString("adminId"));
+                httpSession.setAttribute("userId", jsonObject.getString("adminId"));
                 httpSession.setAttribute("userType", "admin");
             }
             return true;

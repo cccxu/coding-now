@@ -7,6 +7,8 @@ import cn.cccxu.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author 徐浩
  * created at 2019/07/01
@@ -37,5 +39,9 @@ public class TeacherInfoService {
         return new Teacher(
                 new User(null, null, userInfoService.getUserInfo(teacher_id)),
                 teacherDao.selectTeacherInfo(teacher_id));
+    }
+
+    public List<TeacherInfo> getAllTeacher(){
+        return teacherDao.selectAllTeacher();
     }
 }

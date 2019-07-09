@@ -49,7 +49,7 @@ public class CommentController {
     @GetMapping(path = "/comment/getAll")
     public List<Comment> getAllComment(@RequestParam String lessonId,
                                        HttpServletRequest request) {
-        if(request.getSession().getAttribute("userId") == null) {
+        if(request.getSession().getAttribute("userType") == null) {
             return null;
         } else {
             return commentService.getAllComment(lessonId);
@@ -57,13 +57,22 @@ public class CommentController {
     }
 
     @PostMapping(path = "/comment/like")
-    @ResponseBody
     public boolean like(@RequestBody JSONObject jsonObject,
                         HttpServletRequest request) {
         if(request.getSession().getAttribute("userType").equals("user")){
             return commentService.like(jsonObject.getLong("commentId"));
         } else {
             return false;
+        }
+    }
+
+    @GetMapping(path = "/comment/getUserAll")
+    public List<Comment> getUserAllComment(@RequestParam String userId,
+                                           HttpServletRequest request) {
+        if(request.getSession().getAttribute("userType") == null) {
+            return null;
+        } else {
+            return commentService.getUserAllComment(userId);
         }
     }
 }

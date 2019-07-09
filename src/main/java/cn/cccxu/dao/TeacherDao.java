@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author 徐浩
  * created at 2019/07/01
@@ -25,4 +27,8 @@ public interface TeacherDao {
     @Select("SELECT teacher_id FROM tb_teacher " +
             "WHERE teacher_id = #{teacherId}")
     String selectTeacherId(String teacherId);
+
+    @Select("SELECT * " +
+            "FROM tb_teacher")
+    List<TeacherInfo> selectAllTeacher();
 }

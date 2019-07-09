@@ -20,6 +20,6 @@ public class CheckService {
     }
 
     public boolean check(int gainedPoints, String userId) {
-        return checkDao.setMemberPoints(checkDao.getMemberPoints(userId)+gainedPoints, userId);
+        return checkDao.setMemberPoints(userId);
     }
 }

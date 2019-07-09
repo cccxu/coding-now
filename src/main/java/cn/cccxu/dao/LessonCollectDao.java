@@ -33,31 +33,19 @@ public interface LessonCollectDao {
     @Select("SELECT collected_times " +
             "FROM tb_lesson_collect " +
             "WHERE lesson_id = #{lessonId}")
-    int selectLessonCollectTimes(String lessonId);
+    Integer selectLessonCollectTimes(String lessonId);
 
     //点赞
     @Update("UPDATE tb_lesson_collect " +
-            "SET `like` = #{like} " +
+            "SET `like` = `like` + 1 " +
             "WHERE lesson_id = #{lessonId}")
-    boolean updateLike(String lessonId, int like);
-
-    //获取点赞数
-    @Select("SELECT `like` " +
-            "FROM tb_lesson_collect " +
-            "WHERE lesson_id = #{lessonId}")
-    int getLike(String lessonId);
+    boolean updateLike(String lessonId);
 
     //点踩
     @Update("UPDATE tb_lesson_collect " +
-            "SET dislike = #{dislike} " +
+            "SET dislike = dislike - 1 " +
             "WHERE lesson_id = #{lessonId}")
-    boolean updateDislike(String lessonId, int dislike);
-
-    //获取点踩数
-    @Select("SELECT dislike " +
-            "FROM tb_lesson_collect " +
-            "WHERE lesson_id = #{lessonId}")
-    int getDislike(String lessonId);
+    boolean updateDislike(String lessonId);
 
     //获取课程收藏信息
     @Select("SELECT * " +

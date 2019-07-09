@@ -32,7 +32,7 @@ public interface LessonInfoDao {
     String checkLessonIdUseable(String lessonId);
 
     @Select("SELECT * " +
-                "FROM tb_lesson_info" +
+                "FROM tb_lesson_info " +
             "WHERE " +
                 "teacher_id = #{teacherId}")
     List<LessonInfo> selectTeacherLessons(String teacherId);
@@ -60,4 +60,11 @@ public interface LessonInfoDao {
     @Select("SELECT * " +
             "FROM tb_lesson_info ")
     List<LessonInfo> selectAllLesson();
+
+    //模糊查询
+    @Select("SELECT * " +
+            "FROM tb_lesson_info " +
+            "WHERE lesson_title LIKE #{name} " +
+                "OR introduction LIKE #{intro}")
+    List<LessonInfo> selectSearchLesson(String name, String intro);
 }

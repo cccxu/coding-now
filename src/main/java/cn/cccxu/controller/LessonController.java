@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,14 +112,25 @@ public class LessonController {
     }
 
     @GetMapping(path = "/lessons/getTopCollected")
-    public List<LessonCollect> getTopCollected() {
+    public List<JSONObject> getTopCollected() {
         return lessonService.getTopCollected();
     }
 
     @GetMapping(path = "/lessons/getTopLiked")
-    public List<LessonCollect> getTopLiked() {
+    public List<JSONObject> getTopLiked() {
         return lessonService.getTopLiked();
     }
 
+    //根据教师ID获取课程列表
+   @GetMapping(path = "/lessons/getTeacherLesson")
+   public List<LessonInfo> getTeacherLesson(HttpServletRequest request) {
+        return lessonService.getTeacherLesson(request.getSession().getAttribute("userId").toString());
+   }
+
+   //搜索
+    @GetMapping(path = "/lessons/search")
+    public List<JSONObject> searchLesson(@RequestParam String keyword) {
+        return lessonService.searchLesson(keyword);
+    }
 
 }

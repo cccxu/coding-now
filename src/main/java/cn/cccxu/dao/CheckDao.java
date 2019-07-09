@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CheckDao {
 
-    @Update({"UPDATE tb_user_info SET member_points = #{memberPoints} WHERE user_id = #{userId}"})
-    boolean setMemberPoints(int memberPoints, String userId);
+    @Update({"UPDATE tb_user_info SET member_points = member_points + 1 WHERE user_id = #{userId}"})
+    boolean setMemberPoints(String userId);
 
     @Select("SELECT member_points FROM tb_user_info WHERE user_id = #{userId}")
-    int getMemberPoints(String userId);
+    Integer getMemberPoints(String userId);
 
 }

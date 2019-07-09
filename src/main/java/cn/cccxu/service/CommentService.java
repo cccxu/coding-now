@@ -28,11 +28,19 @@ public class CommentService {
         return commentDao.selectAllComment(lessonId);
     }
 
+    public List<Comment> getUserAllComment(String userId) {
+        return commentDao.selecUsertAllComment(userId);
+    }
+
     public boolean like(long commentId) {
         return commentDao.updateLike(commentId);
     }
 
     public boolean replyComment(Comment comment) {
         return commentDao.insertreplyComment(comment);
+    }
+
+    public boolean deleteComment(long commentId){
+        return commentDao.deleteComment(commentId);
     }
 }

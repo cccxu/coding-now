@@ -4,7 +4,11 @@ import cn.cccxu.dao.LessonCollectDao;
 import cn.cccxu.entity.LessonCollect;
 import cn.cccxu.entity.LessonInfo;
 import cn.cccxu.dao.LessonInfoDao;
+import cn.cccxu.entity.TeacherInfo;
 import cn.cccxu.model.Lesson;
+import cn.cccxu.util.LessonCollectedComparator;
+import cn.cccxu.util.LessonLikeComparator;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -35,6 +36,8 @@ public class LessonService {
     private LessonInfoDao lessonInfoDao;
     private LessonCollectDao lessonCollectDao;
 
+    private TeacherInfoService teacherInfoService;
+
     private String baseAddr = "/coding-now/resource/lessons/";
     private String auditAddr = "/coding-now/resource/audit-region/";
     private String rejectAddr = "/coding-now/resource/reject/";
@@ -42,9 +45,10 @@ public class LessonService {
     Logger logger = LoggerFactory.getLogger(LessonService.class);
 
     @Autowired
-    LessonService(LessonInfoDao mLessonInfoDao, LessonCollectDao lessonCollectDao) {
+    LessonService(LessonInfoDao mLessonInfoDao, LessonCollectDao lessonCollectDao, TeacherInfoService teacherInfoService) {
         this.lessonInfoDao = mLessonInfoDao;
         this.lessonCollectDao = lessonCollectDao;
+        this.teacherInfoService = teacherInfoService;
     }
 
     //检查课程ID是否可用
@@ -150,26 +154,44 @@ public class LessonService {
     }
 
     //获取待审核的视频列表
-    public List<String> getAllUnauditLessonId() {
+    public List<LessonInfo> getAllUnauditLessonId() {
 
-        List<String> lessonList = new LinkedList<>();
+        List<LessonInfo> lessonList = new LinkedList<>();
         //获取audit文件夹下所有不为空的文件夹列表
         File lessonDir = new File(auditAddr);
         File[] files = lessonDir.listFiles();
-        for (File f:lessonDir.listFiles()) {
+        if(files == null){
+            return null;
+        }
+        for (File f: files) {
             //判断文件夹是否为空
-            if(f.listFiles().length != 0){
-                //不为空则添加
-                lessonList.add(f.getName());
+            File[] files1 = f.listFiles();
+            if(files1 == null){
+                return null;
+            }
+            if(files1.length != 0){
+                //不为空则查询课程信息
+                lessonList.add(lessonInfoDao.selectLessonInfo(f.getName()));
             }
         }
         return lessonList;
     }
 
-    //todo: 获取课程的待审核列表
     public List<String> getAllUnauditVideo(String lessonId) {
         //课程待审核视频目录
-        return null;
+        List<String> videoName = new LinkedList<>();
+        String pathStr = auditAddr + lessonId;
+
+        File[] files = new File(pathStr).listFiles();
+
+        if(files == null){
+            return null;
+        } else {
+            for (File f : files) {
+                videoName.add(f.getName());
+            }
+            return videoName;
+        }
     }
 
     //获取课程视频列表
@@ -210,23 +232,73 @@ public class LessonService {
 
     //给课程点赞
     public boolean likeLesson(String lessonId) {
-        return lessonCollectDao.updateLike(lessonId,
-                lessonCollectDao.getLike(lessonId) + 1);
+        return lessonCollectDao.updateLike(lessonId);
     }
 
     //给课程
     public boolean dislikeLesson(String lessonId) {
-        return lessonCollectDao.updateDislike(lessonId,
-                lessonCollectDao.getDislike(lessonId) + 1);
+        return lessonCollectDao.updateDislike(lessonId);
     }
 
     //获取收藏前十
-    public List<LessonCollect> getTopCollected() {
-        return lessonCollectDao.selectTopCollected();
+    public List<JSONObject> getTopCollected() {
+        List<JSONObject> jsonObjects = new LinkedList<>();
+        for(LessonCollect lessonCollect : lessonCollectDao.selectTopCollected()){
+            LessonInfo lessonInfo = lessonInfoDao.selectLessonInfo(lessonCollect.getLessonId());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("lessonTitle", lessonInfo.getLessonTitle());
+            jsonObject.put("lessonId", lessonInfo.getLessonId());
+            jsonObject.put("teacherName", teacherInfoService.getTeacherInfo(lessonInfo.getTeacherId()).getTeacher().getRealName());
+            jsonObject.put("teacherId", lessonInfo.getTeacherId());
+            jsonObject.put("imgUrl", lessonInfo.getImageName());
+            jsonObject.put("introduction", lessonInfo.getIntroduction());
+            jsonObject.put("collectedTimes", lessonCollect.getCollectedTimes());
+            jsonObjects.add(jsonObject);
+        }
+        jsonObjects.sort(new LessonCollectedComparator());
+        return jsonObjects;
     }
 
     //获取点赞前十
-    public List<LessonCollect> getTopLiked() {
-        return lessonCollectDao.selectTopLiked();
+    public List<JSONObject> getTopLiked() {
+        List<JSONObject> jsonObjects = new LinkedList<>();
+        for(LessonCollect lessonCollect : lessonCollectDao.selectTopLiked()){
+            LessonInfo lessonInfo = lessonInfoDao.selectLessonInfo(lessonCollect.getLessonId());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("lessonTitle", lessonInfo.getLessonTitle());
+            jsonObject.put("lessonId", lessonInfo.getLessonId());
+            jsonObject.put("teacherName", teacherInfoService.getTeacherInfo(lessonInfo.getTeacherId()).getTeacher().getRealName());
+            jsonObject.put("teacherId", lessonInfo.getTeacherId());
+            jsonObject.put("imgUrl", lessonInfo.getImageName());
+            jsonObject.put("introduction", lessonInfo.getIntroduction());
+            jsonObject.put("collectedTimes", lessonCollect.getCollectedTimes());
+            jsonObjects.add(jsonObject);
+        }
+        jsonObjects.sort(new LessonLikeComparator());
+        return jsonObjects;
+    }
+
+    //获取教师的课程列表
+    public List<LessonInfo> getTeacherLesson(String teacherId){
+        return lessonInfoDao.selectTeacherLessons(teacherId);
+    }
+
+    //搜索
+    public List<JSONObject> searchLesson(String keyword) {
+        List<JSONObject> jsonObjects = new LinkedList<>();
+
+        for(LessonInfo lessonInfo : lessonInfoDao.selectSearchLesson("%"+keyword+"%", "%"+keyword+"%")){
+            LessonCollect lessonCollect = lessonCollectDao.selectLessonCollectInfo(lessonInfo.getLessonId());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("lessonTitle", lessonInfo.getLessonTitle());
+            jsonObject.put("lessonId", lessonInfo.getLessonId());
+            jsonObject.put("teacherName", teacherInfoService.getTeacherInfo(lessonInfo.getTeacherId()).getTeacher().getRealName());
+            jsonObject.put("teacherId", lessonInfo.getTeacherId());
+            jsonObject.put("imgUrl", lessonInfo.getImageName());
+            jsonObject.put("introduction", lessonInfo.getIntroduction());
+            jsonObject.put("collectedTimes", lessonCollect.getCollectedTimes());
+            jsonObjects.add(jsonObject);
+        }
+        return jsonObjects;
     }
 }

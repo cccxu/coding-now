@@ -32,7 +32,11 @@ public class LoginService {
     }
 
     public boolean checkUserLogin(String userId, String passwordHash){
-        return loginInfoDao.checkUserLogin(userId).getPasswordHash().equals(passwordHash);
+        if(loginInfoDao.selectUsrBan(userId)!=null){
+            return false;
+        } else {
+            return loginInfoDao.checkUserLogin(userId).getPasswordHash().equals(passwordHash);
+        }
     }
 
     //教师登录，检查用户名和密码，然后检查是否为教师
@@ -49,7 +53,11 @@ public class LoginService {
 
     //管理员登录，检查管理员表中的用户名和密码
     public boolean checkAdminLogin(String adminId, String passwordHash) {
-        String test = adminDao.selectAdminPasswordHash(adminId);
         return adminDao.selectAdminPasswordHash(adminId).equals(passwordHash);
+    }
+
+    //禁止用户登录
+    public boolean banUser(String userId) {
+        return loginInfoDao.insertUserBan(userId);
     }
 }

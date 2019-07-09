@@ -1,10 +1,7 @@
 package cn.cccxu.dao;
 
 import cn.cccxu.entity.Comment;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,11 +37,21 @@ public interface CommentDao {
             "WHERE in_lesson_id = #{lessonId}")
     List<Comment> selectAllComment(String lessonId);
 
+    //获取所有评论
+    @Select("SELECT * " +
+            "FROM tb_comment " +
+            "WHERE from_user_id = #{userId}")
+    List<Comment> selecUsertAllComment(String userId);
+
     //点赞
     @Update("UPDATE tb_comment " +
             "SET comment_like = comment_like + 1 " +
             "WHERE comment_id = #{commentId}")
     boolean updateLike(long commentId);
 
-    //todo: 根据用户id查看发言
+    //删除评论
+    @Delete("DELETE * " +
+            "FROM tb_comment " +
+            "WHERE comment_id = #{commentId}")
+    boolean deleteComment(long commentId);
 }

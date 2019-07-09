@@ -32,4 +32,16 @@ public interface LoginInfoDao {
             "WHERE " +
                 "user_id = #{userId}"})
     boolean changePassword(LoginInfo loginInfo);
+
+    //禁止用户登录
+    @Insert("INSERT INTO tb_user_ban " +
+            "(user_id) " +
+            "VALUES (#{userId})")
+    boolean insertUserBan(String userId);
+
+    //检查用户是否被ban
+    @Select("SELECT * " +
+            "FROM tb_user_ban " +
+            "WHERE user_id = #{userId}")
+    String selectUsrBan(String userId);
 }
