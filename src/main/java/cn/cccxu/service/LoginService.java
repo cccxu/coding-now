@@ -49,6 +49,7 @@ public class LoginService {
 
     //管理员登录，检查管理员表中的用户名和密码
     public boolean checkAdminLogin(String adminId, String passwordHash) {
+        String test = adminDao.selectAdminPasswordHash(adminId);
         return adminDao.selectAdminPasswordHash(adminId).equals(passwordHash);
     }
 }

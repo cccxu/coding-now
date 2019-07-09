@@ -1,10 +1,13 @@
 package cn.cccxu.controller;
 
+import cn.cccxu.entity.LessonCollect;
 import cn.cccxu.entity.LessonInfo;
 import cn.cccxu.model.Lesson;
 import cn.cccxu.service.LessonService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class LessonController {
 
     private LessonService lessonService;
+    Logger logger = LoggerFactory.getLogger(LessonController.class);
 
     @Autowired
     LessonController(LessonService lessonService) {
@@ -94,6 +98,7 @@ public class LessonController {
         String teacherId = (String)request.getSession().getAttribute("userId");
 
         if(!lessonService.getLessonTeacher(lessonId).equals(teacherId)){
+            logger.info("++++++++教师ID不匹配----" + lessonService.getLessonTeacher(lessonId) + "----" + teacherId);
             return false;
         } else {
             return lessonService.uploadVideo(files, teacherId, lessonId);
@@ -104,4 +109,16 @@ public class LessonController {
     public List<String> getVideoList(@PathVariable("lessonId") String lessonId) {
         return lessonService.getVideoList(lessonId);
     }
+
+    @GetMapping(path = "/lessons/getTopCollected")
+    public List<LessonCollect> getTopCollected() {
+        return lessonService.getTopCollected();
+    }
+
+    @GetMapping(path = "/lessons/getTopLiked")
+    public List<LessonCollect> getTopLiked() {
+        return lessonService.getTopLiked();
+    }
+
+
 }

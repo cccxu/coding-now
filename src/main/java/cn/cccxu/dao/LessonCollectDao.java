@@ -1,11 +1,12 @@
 package cn.cccxu.dao;
 
 import cn.cccxu.entity.LessonCollect;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 徐浩
@@ -63,4 +64,20 @@ public interface LessonCollectDao {
             "FROM tb_lesson_collect " +
             "WHERE lesson_id = #{lessonId}")
     LessonCollect selectLessonCollectInfo(String lessonId);
+
+    //获取收藏次数前10的课程
+    @MapKey("lesson_id")
+    @Select("SELECT * " +
+            "FROM tb_lesson_collect " +
+            "ORDER BY collected_times DESC " +
+            "limit 10")
+    List<LessonCollect> selectTopCollected();
+
+    //获取点赞次数前10的课程
+    @MapKey("lesson_id")
+    @Select("SELECT * " +
+            "FROM tb_lesson_collect " +
+            "ORDER BY `like` DESC " +
+            "limit 10")
+    List<LessonCollect> selectTopLiked();
 }

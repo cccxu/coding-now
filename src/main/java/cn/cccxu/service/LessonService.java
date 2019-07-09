@@ -5,6 +5,8 @@ import cn.cccxu.entity.LessonCollect;
 import cn.cccxu.entity.LessonInfo;
 import cn.cccxu.dao.LessonInfoDao;
 import cn.cccxu.model.Lesson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +39,7 @@ public class LessonService {
     private String auditAddr = "/coding-now/resource/audit-region/";
     private String rejectAddr = "/coding-now/resource/reject/";
 
-
+    Logger logger = LoggerFactory.getLogger(LessonService.class);
 
     @Autowired
     LessonService(LessonInfoDao mLessonInfoDao, LessonCollectDao lessonCollectDao) {
@@ -55,10 +58,13 @@ public class LessonService {
         //课程存储的路径
         String rootPath = baseAddr + lessonInfo.getLessonId();
         String auditPath = auditAddr + lessonInfo.getLessonId();
+        String rejectPath = rejectAddr + lessonInfo.getLessonId();
         File file = new File(rootPath);
         File auditFile = new File(auditPath);
+        File rejectFile = new File(rejectPath);
         boolean mkAuditFile = auditFile.mkdir() ;
         boolean mkFile = file.mkdir();
+        boolean mkRejectFile = rejectFile.mkdir();
 
         //设置lesson的rootPath, 注意，这里要转为url
         String url = "/lessons/" + lessonInfo.getLessonId() + "/";
@@ -92,7 +98,8 @@ public class LessonService {
         return lessonInfoDao.insertLesson(lessonInfo) &
                 lessonCollectDao.insertLessonCollct(lessonInfo.getLessonId()) &
                 mkAuditFile &
-                mkFile;
+                mkFile &
+                mkRejectFile;
     }
 
     //上传课程视频
@@ -106,9 +113,10 @@ public class LessonService {
             try {
                 byte[] bytes = files.get(fileName).getBytes();
                 //上传后放到待审核文件夹
-                String storeLocal = auditAddr + lessonId;
+                String storeLocal = auditAddr + lessonId + "/";
                 String originalName = files.get(fileName).getOriginalFilename();
                 if(originalName == null) {
+                    logger.info("--------文件名为空");
                     return false;
                 }
                 //保证扩展名不变
@@ -116,11 +124,11 @@ public class LessonService {
                 Path paths = Paths.get(storeLocal +
                         fileName +
                         originalName.substring(lastIndexOfFileName));
-
                 Files.write(paths, bytes, StandardOpenOption.CREATE);
 
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.info("--------异常");
                 return false;
             }
         }
@@ -139,8 +147,29 @@ public class LessonService {
         } else {
             return oldFile.renameTo(rejectFile);
         }
+    }
 
+    //获取待审核的视频列表
+    public List<String> getAllUnauditLessonId() {
 
+        List<String> lessonList = new LinkedList<>();
+        //获取audit文件夹下所有不为空的文件夹列表
+        File lessonDir = new File(auditAddr);
+        File[] files = lessonDir.listFiles();
+        for (File f:lessonDir.listFiles()) {
+            //判断文件夹是否为空
+            if(f.listFiles().length != 0){
+                //不为空则添加
+                lessonList.add(f.getName());
+            }
+        }
+        return lessonList;
+    }
+
+    //todo: 获取课程的待审核列表
+    public List<String> getAllUnauditVideo(String lessonId) {
+        //课程待审核视频目录
+        return null;
     }
 
     //获取课程视频列表
@@ -191,5 +220,13 @@ public class LessonService {
                 lessonCollectDao.getDislike(lessonId) + 1);
     }
 
-    //todo: 获取课程审核信息列表等
+    //获取收藏前十
+    public List<LessonCollect> getTopCollected() {
+        return lessonCollectDao.selectTopCollected();
+    }
+
+    //获取点赞前十
+    public List<LessonCollect> getTopLiked() {
+        return lessonCollectDao.selectTopLiked();
+    }
 }

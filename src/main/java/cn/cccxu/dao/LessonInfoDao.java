@@ -31,8 +31,8 @@ public interface LessonInfoDao {
                 "lesson_id = #{lessonId}")
     String checkLessonIdUseable(String lessonId);
 
-    @Select("SELECT " +
-                " * " +
+    @Select("SELECT * " +
+                "FROM tb_lesson_info" +
             "WHERE " +
                 "teacher_id = #{teacherId}")
     List<LessonInfo> selectTeacherLessons(String teacherId);
@@ -56,5 +56,8 @@ public interface LessonInfoDao {
             "WHERE lesson_id = #{lessonId}")
     LessonInfo selectLessonInfo(String lessonId);
 
-    //
+    //获取所有课程列表
+    @Select("SELECT * " +
+            "FROM tb_lesson_info ")
+    List<LessonInfo> selectAllLesson();
 }
