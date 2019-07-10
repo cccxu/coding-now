@@ -50,8 +50,7 @@ public interface CommentDao {
     boolean updateLike(long commentId);
 
     //删除评论
-    @Delete("DELETE * " +
-            "FROM tb_comment " +
+    @Delete("DELETE FROM tb_comment " +
             "WHERE comment_id = #{commentId}")
     boolean deleteComment(long commentId);
 }
